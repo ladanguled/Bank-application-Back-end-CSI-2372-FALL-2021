@@ -189,17 +189,25 @@ inline void Transaction::setAmount(double amountTr)
 //****************************************************************************
 void sortAccounts(BankAccount ** list)
 {
-
-
-
-
-
-
-
-
-
+     void order(BankAccount** , BankAccount**);  //call to helper method
+     int j, k;                      
+    for(j=0; j<6-1; j++){ //TODO: check for n 
+         for(k=j+1; k<6; k++){
+              order(list+j, list+k); 
+         }       
+    }  
+	
 }
 
+void order(BankAccount** p1, BankAccount** p2){
+     if( (*p1)->getAccountId() > (*p2)->getAccountId())  {  
+        BankAccount* tempptr = *p1;
+        *p1 = *p2;  
+        *p2 = tempptr;  
+     }  
+  }          
+
+    
 //******************************************************************
 // Purpose: This function reads the file 'clients.txt' and builds 
 // an array containing the different bank accounts of customers.
