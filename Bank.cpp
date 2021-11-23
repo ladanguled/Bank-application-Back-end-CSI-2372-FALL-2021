@@ -370,7 +370,21 @@ void LoanAccount::executeTransaction(const Transaction trans)
 //*************************************************************************
 void updateAccounts(BankAccount ** listAccounts) {
      ifstream inputFile("transact.txt");	// Opening the input file
-
+     string line;
+     while(getline(inputFile,line)){
+          long trID=stol(line.substr(0,5));
+          int trType=stoi(line.substr(6,8));
+          long trDate=stol(line.substr(9,15));
+          int trCode=stoi(line.substr(16,18));
+          double trAmount=stod(line.substr(19, -1));
+          Transaction t(trID, trType, trDate, trCode, trAmount);
+          for (int i=0; i<(sizeof(*listAccounts)/sizeof(**listAccounts)); i++){
+               BankAccount b=*(listAccounts[i]);
+               if (b.getAccountId()==trID){
+                    b.executeTransaction(t);
+               }
+          }
+     }
 	 
 	 
 	 
@@ -398,7 +412,7 @@ void displayAccounts(BankAccount ** listAccounts)
 
     cout << "                       THE REPORT OF THE BANK ACCOUNTS OF CLIENTS" << endl;
     cout << "                       ------------------------------------------" << endl << endl;
-	
+
     int i = 0;
 	
 
