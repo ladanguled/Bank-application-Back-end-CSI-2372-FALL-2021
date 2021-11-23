@@ -379,9 +379,9 @@ void updateAccounts(BankAccount ** listAccounts) {
           double trAmount=stod(line.substr(19, -1));
           Transaction t(trID, trType, trDate, trCode, trAmount);
           for (int i=0; i<(sizeof(*listAccounts)/sizeof(**listAccounts)); i++){
-               BankAccount b=*(listAccounts[i]);
-               if (b.getAccountId()==trID){
-                    b.executeTransaction(t);
+               BankAccount* b=listAccounts[i];
+               if ((*b).getAccountId()==trID){
+                    (*b).executeTransaction(t); //todo:dynamic cast
                }
           }
      }
@@ -412,16 +412,30 @@ void displayAccounts(BankAccount ** listAccounts)
 
     cout << "                       THE REPORT OF THE BANK ACCOUNTS OF CLIENTS" << endl;
     cout << "                       ------------------------------------------" << endl << endl;
-
+     
     int i = 0;
+    
+    int length=sizeof(*listAccounts)/sizeof(**listAccounts);
+    for(int x=0; x<length; x++){
+         if (!find[i]){
+          long accountID=(*(listAccounts[x])).getAccountId();
+          cout<<"Client Name: "<<(*(listAccounts[x])).getClientName()<<endl;
+          i=x;
+          while(i<length){
+               if (accountID==(*(listAccounts[x])).getAccountId()){
+                    (*(listAccounts[x])).print(); //todo:dynamic cast
+                    find[i]=TRUE;
+                    i++;
+               }
+               i++;
+          }
+          
+          
+         }
+    } 
+    
 	
 
-	
-	
-	
-	
-	
-	
 	
 	
 }
@@ -431,6 +445,7 @@ void displayAccounts(BankAccount ** listAccounts)
 
 int main()
 {
+    //cout<<"is this working"<<endl; remove later!!
     BankAccount ** list = readAccounts();
     sortAccounts(list);
     displayAccounts(list);
