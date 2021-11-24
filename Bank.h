@@ -171,6 +171,7 @@ class LoanAccount : public BankAccount
      // Modifying the fields of an instance
      void setNbYears(int nbyear);
      void setRate(double rt);
+     void Bonus();
 private:
      int nbyears;
      double rate;

@@ -120,7 +120,7 @@ inline LoanAccount::LoanAccount(long id, int newType, char * name,
                                     long newDate, double newBalance, int nbyear,
                                     double newRate) : BankAccount(id, newType,
                                     name, newDate, newBalance), nbyears(nbyear), rate(newRate)
-{ }
+{ Bonus(); }
 
 inline void LoanAccount::setNbYears(int nbyear)
 {
@@ -138,6 +138,11 @@ void LoanAccount::print()
     cout.setf(ios::fixed);
     cout.precision(2);
     cout << "\t" << nbyears << "\t\t" << rate << endl;
+}
+
+void LoanAccount::Bonus()
+{
+  setBalance(getBalance() + (getBalance()* getRate() * (getNbYears())/36000.00));
 }
 
 //******************************************************************
