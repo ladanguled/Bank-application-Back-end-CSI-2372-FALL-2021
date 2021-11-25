@@ -247,24 +247,27 @@ BankAccount ** readAccounts()
     inputFile.getline(nameRead, 60);
 	 
     while (inputFile && (counter < K_SizeMax - 1)){
-        // YOU HAVE TO DO SOMETHING FROM HERE !!!
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-        // UNTIL THIS POINT.
-
+       //check type of account
+          if(TypeRead != 01 ||  TypeRead != 02){ //not checking or savings account
+               if(TypeRead == 03){
+                    DepositAccount *d = new DepositAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead, nbyearRead);
+                    listAccounts[counter] = d;
+               } 
+               else{
+                    LoanAccount *l = new LoanAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead, nbyearRead, RateRead);
+                    listAccounts[counter] = l;
+               }
+          }
+          else{
+               if(TypeRead == 01){
+                    BankAccount *a = new BankAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead);
+                    listAccounts[counter] = a;
+               }
+               else{
+                    BankAccount *b = new BankAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead);
+                    listAccounts[counter] = b;
+               }
+          }
           inputFile >> accountRead >> TypeRead >> dateRead >> balanceRead >> nbyearRead >> RateRead;
           inputFile.getline(nameRead, 60);
           pAccount++;
@@ -273,9 +276,6 @@ BankAccount ** readAccounts()
      *pAccount = new BankAccount();
      return listAccounts;
 }
-
-
-
 
 
 //*****************************************************************************************
