@@ -383,11 +383,15 @@ void updateAccounts(BankAccount ** listAccounts) {
           int trCode=stoi(line.substr(16,18));
           double trAmount=stod(line.substr(19, -1));
           Transaction t(trID, trType, trDate, trCode, trAmount);
-          for (int i=0; i<(sizeof(*listAccounts)/sizeof(**listAccounts)); i++){
+          //cout<<trID<<" "<<trType<<" "<<trDate<<" "<<trCode<<" "<<trAmount<<" "<<endl;
+          //cout<<"siZe: "<<(sizeof(listAccounts[0])/sizeof(**listAccounts))<<endl;
+          for (int i=0; i<6; i++){
                BankAccount* b=listAccounts[i];
                if ((*b).getAccountId()==trID){
                     (*b).executeTransaction(t); //todo:dynamic cast
                }
+               //(*b).print();
+               
           }
      }
 	 
@@ -419,20 +423,20 @@ void displayAccounts(BankAccount ** listAccounts)
     cout << "                       ------------------------------------------" << endl << endl;
      
     int i = 0;
+    cout.setf(ios::fixed);
+    cout.precision(2);
     
-    int length=sizeof(*listAccounts)/sizeof(**listAccounts);
-    for(int x=0; x<length; x++){
-         if (!find[i]){
+    for(int x=0; x<6; x++){
+         if (!find[x]){
           long accountID=(*(listAccounts[x])).getAccountId();
           cout<<"Client Name: "<<(*(listAccounts[x])).getClientName()<<endl;
+          cout << "Bank Account" << "\t\t" << "Type" << "\t" << "Update Date" << "\t" << "Balance"<< "\t\t" << "Nb. Years" << "\t" << "Rate" << endl;;
           i=x;
-          while(i<length){
-               if (accountID==(*(listAccounts[x])).getAccountId()){
-                    (*(listAccounts[x])).print(); //todo:dynamic cast
+          while(accountID==(*(listAccounts[i])).getAccountId()){
+               (*(listAccounts[i])).print(); //todo:dynamic cast
                     find[i]=TRUE;
                     i++;
-               }
-               i++;
+              
           }
           
           
@@ -450,11 +454,14 @@ void displayAccounts(BankAccount ** listAccounts)
 
 int main()
 {
-    //cout<<"is this working"<<endl; remove later!!
+   
     BankAccount ** list = readAccounts();
+    
     sortAccounts(list);
     displayAccounts(list);
+    
     updateAccounts(list);
+    
     cout << endl << endl;
     cout << "               ************************************************" << endl;
     cout << "               * RE-DISPLAY OF DATA AFTER THE UPDATE *" << endl;
