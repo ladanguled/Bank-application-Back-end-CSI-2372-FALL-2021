@@ -248,7 +248,7 @@ BankAccount ** readAccounts()
 	 
     while (inputFile && (counter < K_SizeMax - 1)){
        //check type of account
-          if(TypeRead != 01 ||  TypeRead != 02){ //not checking or savings account
+          if(TypeRead != 01 &&  TypeRead != 02){ //not checking or savings account
                if(TypeRead == 03){
                     DepositAccount *d = new DepositAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead, nbyearRead);
                     listAccounts[counter] = d;
@@ -319,12 +319,13 @@ void BankAccount::executeTransaction(const Transaction trans)
      if (validateTransaction(trans))
        {
          if (trans.getCode() == 01)    // Deposit
-           {
+           { 
              setBalance(getBalance() + trans.getAmount());
            }
          else 
            { if (trans.getCode() == 02)    // Withdrawal
                 {
+                    
                   if (getBalance() >= trans.getAmount())
                      { setBalance(getBalance() - (trans.getAmount() + 0.50)); }
                   else {cout << " insufficient balance!! " << endl; }
@@ -383,14 +384,37 @@ void updateAccounts(BankAccount ** listAccounts) {
           int trCode=stoi(line.substr(16,18));
           double trAmount=stod(line.substr(19, -1));
           Transaction t(trID, trType, trDate, trCode, trAmount);
-          //cout<<trID<<" "<<trType<<" "<<trDate<<" "<<trCode<<" "<<trAmount<<" "<<endl;
-          //cout<<"siZe: "<<(sizeof(listAccounts[0])/sizeof(**listAccounts))<<endl;
+     
           for (int i=0; i<6; i++){
-               BankAccount* b=listAccounts[i];
-               if ((*b).getAccountId()==trID){
-                    (*b).executeTransaction(t); //todo:dynamic cast
+               /*BankAccount* b=listAccounts[i];
+               if ((*b).getAccountId()==trID && (*b).getType()==trType){
+                    cout<<trID<<" "<<trType<<" "<<trDate<<" "<<trCode<<" "<<trAmount<<" "<<endl;
+                    (*b).executeTransaction(t); //without dynamic cast
+                    cout<<"siccessful transaction"<<endl;
+                    (*b).print();
+               }*/
+               
+               
+               if ((*(listAccounts[i])).getAccountId()==trID && (*(listAccounts[i])).getType()==trType){
+                    DepositAccount* d=dynamic_cast<DepositAccount*>(listAccounts[i]);
+                    if (d!=nullptr){
+                         (*d).executeTransaction(t);
+                        
+                    }else{
+                       LoanAccount* l=dynamic_cast<LoanAccount*>(listAccounts[i]);
+                       if (l!=nullptr){
+                            (*l).executeTransaction(t);
+                            
+                       }else{
+                            BankAccount* b=listAccounts[i];
+                            (*b).executeTransaction(t); 
+                           
+                         
+                       }  
+                    }
+                    
                }
-               //(*b).print();
+               
                
           }
      }
@@ -431,16 +455,40 @@ void displayAccounts(BankAccount ** listAccounts)
           long accountID=(*(listAccounts[x])).getAccountId();
           cout<<"Client Name: "<<(*(listAccounts[x])).getClientName()<<endl;
           cout << "Bank Account" << "\t\t" << "Type" << "\t" << "Update Date" << "\t" << "Balance"<< "\t\t" << "Nb. Years" << "\t" << "Rate" << endl;;
+          cout << "------------" << "\t\t" << "----" << "\t" << "-----------" << "\t" << "-------"<< "\t\t" << "---------" << "\t" << "----" << endl;;
           i=x;
           while(accountID==(*(listAccounts[i])).getAccountId()){
-               (*(listAccounts[i])).print(); //todo:dynamic cast
+               /*(*(listAccounts[i])).print(); //without dynamic cast
+               cout<<endl;*/
+                    DepositAccount* d=dynamic_cast<DepositAccount*>(listAccounts[i]);
+                    if (d!=nullptr){
+                         (*d).print();
+                         totalAccounts+=(*d).getBalance();
+
+                    }else{
+                       LoanAccount* l=dynamic_cast<LoanAccount*>(listAccounts[i]);
+                       if (l!=nullptr){
+                            (*l).print();
+                            totalAccounts+=(*l).getBalance();
+                       }else{
+                            BankAccount* b=listAccounts[i];
+                            (*b).print();
+                            totalAccounts+=(*b).getBalance();
+                            cout<<endl;
+                       }  
+                    }
+                    
                     find[i]=TRUE;
                     i++;
               
           }
+          cout << "            " << "\t\t" << "    " << "\t" << "           " << "\t" << "-------"<<endl;
+          cout<<"\t\t"<<"TOTAL ACCOUNTS: "<<totalAccounts<<endl<<endl;
+          totalAccounts=0;
           
           
          }
+         
     } 
     
 	
